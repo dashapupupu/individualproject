@@ -1,0 +1,231 @@
+body {
+    font-family: "Unbounded", sans-serif;
+    margin: 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.nav {
+    background: linear-gradient(to right, #ffffff, #70ff53);
+    color:rgb(39, 36, 36);
+    font-weight: bold; 
+    border-radius: 30px; /*углы*/
+    padding: 10px;
+    padding-left: 50px;
+    margin: 10px;
+    margin-top: 30px;
+    margin-left: 100px;
+    margin-right: 5px;
+    
+}
+
+header {
+    background-color: transparent;
+    padding: 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(0, 0.2, 0.2, 0.2);
+    padding-bottom: 20px;
+    margin-bottom: 35px;
+}
+
+.logo h1 {
+    margin: 500;
+    font-size: 40px;
+    font-weight: 900;
+    padding-left: 100px;
+    color: #000000;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav li {
+    margin-right: 16px;
+    padding-left: 15px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 400;
+}
+
+main {
+    padding: 35px;
+}
+
+.content {
+    display: flex;
+}
+
+.categories {
+    width: 250px;
+    margin-right: 16px;
+    background-color:transparent;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0.1, 0.2, 0.4, 0.4);
+
+}
+
+.categories h2 {
+    font-size: 30px;
+    margin-top: 2px;
+    font-weight: 400;
+    margin-bottom: 15px;
+    color: rgb(0, 0, 0)
+
+}
+
+.categories ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+ 
+}
+
+.categories li {
+    margin-bottom: 8px;
+    padding: 5px;
+    
+}
+
+.categories a {
+    font-size: 18px;
+    text-decoration: none;
+    color: #333;
+}
+
+.products {
+    flex: 1;
+    background: transparent;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0.2, 0.2, 0.2);
+    border: 5px solid #70ff53;
+}
+
+.products h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-weight: 400;
+
+}
+/* контейнер продукта */
+.product {
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.product img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 8px;
+}
+
+.product h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.product p {
+    margin-bottom: 8px;
+}
+
+.product button {
+    background-color: #70ff53; 
+    border-color:transparent;
+    border-width: 2px;
+    color:black;
+    font-weight: bold; 
+    border-radius: 30px; /*углы*/
+    padding: 10px 53px;
+}
+
+nav a:hover {
+    text-decoration: none;
+    color: #ffffff; 
+}
+
+button:hover
+{
+    text-decoration: none;
+    color: #ffffff; 
+
+}
+
+
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 16px 0;
+    text-align: center;
+}
+
+
+#week-products .carousel-item img {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 20px;
+    transition: transform 0.3s ease-in-out; /*увеличение в карусели картинок сама анимация*/
+}
+
+#week-products .carousel-item img:hover {
+    transform: scale(1.05);
+}
+
+/*товары недели*/
+#week-products {
+  border-radius: 20px; 
+  padding: 0px 60px;
+  margin: 20px 60px;
+  box-shadow: 0 4px 8px rgba(0, 0.2, 0.2, 0.2);
+}
+/*заголовок над каруселью добавь потом текста*/
+.h2 {
+  background-color: #4CAF50;
+  border-radius: 20px; 
+  padding: 0px 60px;
+  margin: 20px 60px;
+}
+
+/* О НАС */
+.text-center h4{
+padding-top: 20px;
+font-size: 30px;
+}
+
+.text-center h5 {
+    font-size: 20px;
+    margin-top: 20px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: rgb(0, 0, 0);
+    padding: 20px;
+    padding-bottom: 50px;
+}
+
+.thumbnail img {
+    border-radius: 20px; /*углы*/
+    border: 5px solid #454443;
+    width:1300px;
+    height: 300px;
+   
+}
+.caption p {
+    font-size: 17px;
+    padding:10px;
+}
+.caption h3{
+    padding-bottom: 5px;
+    padding-top: 20px;
+}

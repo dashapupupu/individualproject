@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Продуктовый магазин</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
@@ -20,7 +20,9 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="logo col-md-4">
+                    <a href="{% url 'index' %}">
                     <h1>ДОЛИНА</h1>
+                    </a>
                 </div>
                 <div class="col-md-8">
                     <nav>
@@ -68,27 +70,31 @@
                 <aside class="categories">
                     <h2>Категории</h2>
                     <ul>
-                        <li><a href="#">Птица, мясо</a></li>
-                        <li><a href="#">Колбасные изделия</a></li>
-                        <li><a href="#">Замороженные продукты</a></li>
-                        <li><a href="#">Овощи, фрукты, орехи</a></li>
-                        <li><a href="#">Молочные продукты, яйца</a></li>
-                        <li><a href="#">Сыр</a></li>
-                        <li><a href="#">Рыба, икра, морепродукты</a></li>
-                        <li><a href="#">Готовая еда</a></li>
-                        <li><a href="#">Бакалея</a></li>
-                        <li><a href="#">Вода, соки, напитки</a></li>
-                        <li><a href="#">Алкоголь</a></li>
+                        {% for category in categories_list %}
+                            <li>
+                                <a href="?category={{ category.id }}">{{ category.name }}</a>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </aside>
                 <section class="products">
                     <h2>Рекомендуемые товары</h2>
-                    <div class="product">
-                        <img src="images/product1.jpg" alt="Товар 1">
-                        <h3>Название товара 1</h3>
-                        <p>Описание товара 1</p>
-                        <p>Цена: 100 руб.</p>
-                        <button>В корзину</button>
+                    <div class="row">
+                        {% for product in products %}
+                            <div class="col-md-3"> 
+                                <div class="card product">
+                                     <img src="{{ product.image.url }}" alt="{{ product.name }}"> 
+                                    <div class="card-body">
+                                        <p class="card-text">{{ product.price }} ₽</p>
+                                        <h5 class="card-title">{{ product.name }}</h5>
+                                        
+                                        <a href="#">
+                                            <img src="static/images/korzina.png" alt="картинки">
+                                          </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </section>
             </div>
@@ -97,7 +103,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 Продуктовый магазин. Все права защищены.</p>
+            <p>&copy; 2024 ДОЛИНА. Все права защищены.</p>
         </div>
     </footer>
 
