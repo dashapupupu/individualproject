@@ -276,3 +276,143 @@ font-size: 30px;
     padding-bottom: 5px;
     padding-top: 20px;
 }
+
+
+.total-cell {
+    font-size: 20px; 
+    font-weight: bold; 
+    color: #333; 
+    background-color: #f9f9f9; 
+    text-align: right; 
+    padding: 10px; 
+    border: 2px solid #4CAF50; 
+    font-size: 25px;
+}
+.itog-fog {
+    font-size: 20px; 
+    font-weight: bold; 
+    color: #333; 
+    background-color: #f9f9f9; 
+    text-align: right; 
+    padding: 10px; 
+    border-bottom: transparent;
+}
+
+
+.card img{
+   
+    transition: transform 0.3s;
+    cursor: pointer; 
+}
+
+.card img:hover {
+    transform: scale(1.05); 
+}
+
+
+
+
+.products button{
+    background-color: #4CAF50; 
+    color: white; 
+    border: none; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+
+} 
+
+
+
+
+tbody a {
+    color: red; 
+    text-decoration: none; 
+    transition: color 0.3s, text-shadow 0.3s; 
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+
+th {
+    background-color: #51db35; 
+    color: white; 
+    font-weight: 500;
+   
+    
+}
+
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2; 
+}
+
+tbody tr:hover {
+    background-color: #ddd; 
+}
+
+td img {
+    border-radius: 5px; 
+    width: 100px;
+    height:100px;
+}
+
+
+button {
+    background-color: #4CAF50; 
+    color: white; 
+    border: none; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+    font-weight: 300;
+}
+
+button:hover {
+    background-color: #45a049; 
+}
+
+/* кнопка удалить */
+td a {
+    color: red; 
+    text-decoration: none; 
+}
+button.update-button {
+    font-weight: normal; 
+    background-color: #51db35; 
+    color: white; 
+    border: none; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    cursor: pointer; /* eказатель при наведении */
+    transition: background-color 0.3s, transform 0.2s; 
+}
+
+button.update-button:hover {
+    background-color: #45a049; 
+   
+}
+td a:hover {
+    text-decoration: underline; 
+    color: rgb(170, 0, 0);
+}
+
+/*  о пустой корзине */
+p {
+    font-size: 18px;
+    color: #555; /* Серый цвет текста */
+}

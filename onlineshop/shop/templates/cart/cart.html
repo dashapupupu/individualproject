@@ -1,0 +1,47 @@
+{%extends "base.html"%}
+{%block content%}
+<h1>Корзина</h1>
+
+{% if cart_items %}
+<table>
+    <thead>
+        <tr>
+            <th>Изображение</th>
+            <th>Товар</th>
+            <th>Цена со скидкой</th>
+            <th>Количество</th>
+            <th>Сумма</th>
+            <th>Удалить</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="50"></td>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.price_with_discount }}</td>
+            <td>
+                <form method="post" action="{% url 'update_cart' item.product.pk %}">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                    <button type="submit" class="update-button">Пересчитать</button>
+                </form>
+            </td>
+            <td>{{ item.item_total }}</td>
+            <td><a href="{% url 'remove_from_cart' item.product.pk %}">Удалить</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4" class="itog-fog">Итого:</td>
+            <td class="total-cell">{{ total }}</td>
+        </tr>
+    </tfoot>
+</table>
+{% else %}
+    <p>Корзина пуста :(</p>
+    <p>Самое время отправляться за покупками!</p>
+{% endif %}
+
+{%endblock%}

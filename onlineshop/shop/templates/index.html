@@ -30,7 +30,7 @@
                             <li class="nav-item"><a class="nav-link" href="about/">О нас</a></li>
                             <li class="nav-item"><a class="nav-link" href="contact/">Контакты</a></li>
                             <li class="nav-item cart-link"><a class="nav-link" href="#">Личный кабинет</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Корзина</a></li>
+                            <li class="nav-item"><a class="nav-link" href="cart/">Корзина</a></li>
                         </ul>
                     </nav>
                 </div> 
@@ -100,9 +100,11 @@
                                     <div class="card-body">
                                         <p class="card-text">{{ product.price }} ₽</p>
                                         <h5 class="card-title">{{ product.name }}</h5>
-                                        <a href="#">
+                                        <a href="#" class="add-to-cart" data-product-id="{{ product.id }}">
                                             <img src="static/images/korzina.png" alt="картинки">
                                         </a>
+                                        
+                                        <div id="fixed-notification" style="display:none; position:fixed; top:20px; right:20px; background-color:#4CAF50; color:white; padding:15px; border-radius:5px; z-index:1000;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -140,5 +142,30 @@
     </footer>
 
     <script src="scripts.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.add-to-cart').click(function(e) {
+                e.preventDefault(); // говорим нет переходу по ссылке
+                var productId = $(this).data('product-id');
+                
+                $.ajax({
+                    url: "{% url 'add_to_cart' 0 %}".replace('0', productId), 
+                    method: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}' 
+                    },
+                    success: function(response) {
+                        $('#fixed-notification').text('Товар успешно добавлен в корзину!').fadeIn().delay(2000).fadeOut();
+                    },
+                    error: function(xhr, status, error) {
+                        $('#fixed-notification').text('Произошла ошибка. Попробуйте еще раз.').fadeIn().delay(2000).fadeOut();
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 </html>
