@@ -16,18 +16,30 @@ def contact(request):
 
 
 def index(request):
-    categories_list = Categories.objects.all()# получка всех категорий
-    all_products = Products.objects.all() # получка всех продуктов
-     
+    categories_list = Categories.objects.all()  # все категории 
+    all_products = Products.objects.all()  # все запросы
 
-    #проверкрка
+    # получени параметра из запроса
     category_id = request.GET.get('category')
+    search_query = request.GET.get('search', '')
+    sort_option = request.GET.get('sort', '')
 
-    #вывод
+    # фильтр по категории
     if category_id:
-        products = Products.objects.filter(categories_id=category_id)
+        products = all_products.filter(categories_id=category_id)
     else:
-        products = all_products # если не выбрано
+        products = all_products  # Если не выбрано
+
+    # нечувств регистр
+    if search_query:
+        products = products.filter(name__icontains=search_query)
+        
+
+    # фильтр по цене
+    if sort_option == 'asc':
+        products = products.order_by('price')  # по возрастанию
+    elif sort_option == 'desc':
+        products = products.order_by('-price')  # по убыванию
 
     context = {
         'products': products,
@@ -35,4 +47,3 @@ def index(request):
     }
 
     return render(request, 'index.html', context)
-

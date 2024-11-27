@@ -79,18 +79,50 @@
                 </aside>
                 <section class="products">
                     <h2>Рекомендуемые товары</h2>
+
+                    <!-- кусок поиска -->
+                    <form method="get" class="mb-3">
+                        <input type="text" name="search" placeholder="Поиск по названию" class="form-control" value="{{ request.GET.search }}">
+                        <select name="sort" class="form-control mt-2">
+                            <option value="">Сортировать по</option>
+                            <option value="asc" {% if request.GET.sort == 'asc' %}selected{% endif %}>Цене: по возрастанию</option>
+                            <option value="desc" {% if request.GET.sort == 'desc' %}selected{% endif %}>Цене: по убыванию</option>
+                        </select>
+                        <input type="hidden" name="category" value="{{ request.GET.category }}">
+                        <button type="submit" class="btn btn-primary mt-2">Найти</button>
+                    </form>
+
                     <div class="row">
                         {% for product in products %}
                             <div class="col-md-3"> 
                                 <div class="card product">
-                                     <img src="{{ product.image.url }}" alt="{{ product.name }}"> 
+                                     <img src="{{ product.image.url }}" alt="{{ product.name }}" data-toggle="modal" data-target="#productModal{{ product.id }}"> 
                                     <div class="card-body">
                                         <p class="card-text">{{ product.price }} ₽</p>
                                         <h5 class="card-title">{{ product.name }}</h5>
-                                        
                                         <a href="#">
                                             <img src="static/images/korzina.png" alt="картинки">
-                                          </a>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- всплывающее окно -->
+                            <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" role="dialog" aria-labelledby="productModalLabel{{ product.id }}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="productModalLabel{{ product.id }}">{{ product.name }}</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                                            <p><strong>Цена:</strong> {{ product.price }} ₽</p>
+                                            <p><strong>Описание:</strong> {{ product.description }}</p>
+                                            <p><strong>Скидка:</strong> {{ product.discount }}%</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
