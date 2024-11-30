@@ -1,0 +1,31 @@
+{%extends "base.html"%}
+
+    {%block title %}Профиль{%endblock%}
+  
+    {%block content%}
+    <h2>Профиль пользователя</h2>
+    <p>Имя пользователя: {{ user.username }}</p>
+    <p>Номер телефона: {{ user_profile.phone_number }}</p>
+    <p>Адрес: {{ user_profile.address }}</p>
+    <p>Город: {{ user_profile.city }}</p>
+    <p>Дата рождения: {{ user_profile.birth_date }}</p>
+    {% if user_profile.avatar %}
+        <img src="{{ user_profile.avatar.url }}" alt="Аватар" width="100">
+    {% endif %}
+    
+    <h3>Адреса доставки</h3>
+    <ul>
+        {% for address in delivery_addresses %}
+            <li>{{ address.address }}, {{ address.city }} 
+                <a href="{% url 'delete_delivery_address' address.id %}">Удалить</a>
+            </li>
+        {% empty %}
+            <li>Нет адресов доставки.</li>
+        {% endfor %}
+    </ul>
+    
+    <a href="{% url 'edit_profile' %}">Редактировать профиль</a>
+    <a href="{% url 'add_delivery_address' %}">Добавить адрес доставки</a>
+    <a href="{% url 'logout' %}">Выйти</a>
+    {%endblock%}
+    

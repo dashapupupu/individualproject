@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
                         <ul class="nav">
                             <li class="nav-item"><a class="nav-link" href="/about">О нас</a></li>
                             <li class="nav-item"><a class="nav-link" href="/contact">Контакты</a></li>
-                            <li class="nav-item cart-link"><a class="nav-link" href="#">Личный кабинет</a></li>
+                            <li class="nav-item cart-link"><a class="nav-link" href="{% url 'register' %}">Личный кабинет</a></li>
                             <li class="nav-item"><a class="nav-link" href="/cart">Корзина</a></li>
                         </ul>
                     </nav>
