@@ -285,7 +285,7 @@ font-size: 30px;
     background-color: #f9f9f9; 
     text-align: right; 
     padding: 10px; 
-    border: 2px solid #4CAF50; 
+   
     font-size: 25px;
 }
 .itog-fog {
@@ -331,16 +331,31 @@ tbody a {
     text-decoration: none; 
     transition: color 0.3s, text-shadow 0.3s; 
 }
+.cart-container table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px; /* Закругление углов */
+    overflow: hidden; /* Чтобы закругленные углы работали */
+    box-shadow: 0 4px 8px rgba(0, 0.2, 0.2, 0.4);
+}
 
-
+.cart-container table tfoot tr {
+   
+    border-left: #454443;
+  
+}
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
     font-size: 16px;
     text-align: left;
+    margin-bottom: 20px;
+   
 }
-
+.cart-container h1 {
+    margin-bottom: 40px;
+}
 th, td {
     padding: 12px;
     border-bottom: 1px solid #ddd;
@@ -348,8 +363,8 @@ th, td {
 
 
 th {
-    background-color: #51db35; 
-    color: white; 
+    background-color: #ffffff; 
+    color: rgb(0, 0, 0); 
     font-weight: 500;
    
     
@@ -414,5 +429,312 @@ td a:hover {
 /*  о пустой корзине */
 p {
     font-size: 18px;
-    color: #555; /* Серый цвет текста */
+    color: #555; 
 }
+
+.checkout-container h1{
+    margin-bottom: 50px;
+}
+.cart-container button {
+    background-color: #676767;
+}
+
+
+
+.btn-custom {
+    background-color: #70ff53; 
+    color: rgb(0, 0, 0); 
+    transition: background-color 0.3s;
+}
+.btn-custom:hover {
+    background-color: #388E3C; 
+    color:#f5f5f5
+}
+.address-card {
+    background: #70ff53; 
+    color: white; 
+    border-radius: 8px; 
+    padding: 10px; 
+    margin-bottom: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s;
+    
+}
+.address-card:hover {
+    transform: scale(1.05); 
+}
+
+.btn-sm {
+    color:#ffffff;
+    background-color: #70ff53;
+    border: transparent
+}
+.btn-danger{
+    background-color: #ff0000;
+
+}
+.btn-secondary {
+    color:rgb(0, 0, 0);
+    background-color: #70ff53;
+    border:transparent;
+    
+    
+
+}
+.btn-secondary:hover{
+    background-color: #388E3C
+
+}
+
+.profile-card {
+   
+    color: white; 
+    border-radius: 50px;
+}
+.info-card {
+    background-color: white; 
+    border: 5px #51ff00; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+@keyframes backgroundAnimation {
+    0% { background-color: #ceffb7; }
+    50% { background-color: #7fff5c; }
+    100% { background-color: #ceffb7; }
+}
+
+
+.login-container {
+    animation: backgroundAnimation 5s infinite alternate;
+    background-color: white; 
+    padding: 30px; 
+    border-radius: 8px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
+    width: 400px; 
+    max-width: 90%; 
+    margin: 50px auto; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+}
+
+.login-title {
+    text-align: center; 
+    color: #000000; 
+}
+
+.login-label {
+    margin-top: 10px; 
+    color: #353535; 
+    width: 100%; 
+}
+
+.login-input {
+    width: 100%; 
+    padding: 10px; 
+    margin: 10px 0; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-size: 16px; 
+}
+
+.login-button {
+    background-color: #4CAF50; 
+    color: white; 
+    border: none; 
+    padding: 10px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    width: 100%; 
+    margin-bottom: 60px;
+
+}
+
+.login-button:hover {
+    background-color: #45a049; 
+}
+
+.login-text {
+    text-align: center; 
+    color: #000000; 
+    margin-bottom: 100px;
+}
+
+.login-link {
+    color: #656565; 
+    text-decoration: none; 
+    margin-bottom: 100px;
+    
+    
+}
+
+.login-link:hover {
+    text-decoration: underline; 
+}
+
+
+
+
+body.password-reset-body {
+    background-color: #e0f7fa; 
+    font-family: Arial, sans-serif; 
+}
+
+.password-reset-container {
+
+    animation: backgroundAnimation 5s infinite alternate;
+    padding: 30px; 
+    border-radius: 8px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
+    width: 400px; 
+    max-width: 90%; 
+    margin: 50px auto; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+}
+
+.password-reset-title {
+    text-align: center; 
+    color: #333; 
+}
+
+.password-reset-label {
+    margin-top: 10px; 
+    color: #666; 
+    width: 100%; 
+}
+
+.password-reset-input {
+    width: 100%; 
+    padding: 10px; 
+    margin: 10px 0; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-size: 16px; 
+}
+
+.password-reset-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.password-reset-button:hover {
+    background-color: #45a049;
+}
+
+body.code-confirmation-body {
+    background-color: #e0f7fa;
+    font-family: Arial, sans-serif;
+}
+
+.code-confirmation-container {
+    animation: backgroundAnimation 5s infinite alternate;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 90%;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.code-confirmation-title {
+    text-align: center;
+    color: #333;
+}
+
+.code-confirmation-label {
+    margin-top: 10px;
+    color: #666;
+    width: 100%;
+}
+
+.code-confirmation-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.code-confirmation-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.code-confirmation-button:hover {
+    background-color: #45a049;
+}
+
+body.password-reset-body {
+    background-color: #e0f7fa;
+    font-family: Arial, sans-serif;
+}
+
+.password-reset-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 90%;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.password-reset-title {
+    text-align: center;
+    color: #333;
+}
+
+.password-reset-label {
+    margin-top: 10px;
+    color: #666;
+    width: 100%;
+}
+
+.password-reset-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.password-reset-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.password-reset-button:hover {
+    background-color: #45a049;
+}
+
+
+

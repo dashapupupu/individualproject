@@ -1,19 +1,23 @@
-{%extends "base.html"%}
+{% extends "base.html" %}
 
-    {%block title %}Вход{%endblock%}
-  
-    {%block content%}
-    <h2>Вход</h2>
-    <form method="post">
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="login-body">
+<div class="login-container">
+    <h2 class="login-title">Вход</h2>
+    <form method="post" class="login-form">
         {% csrf_token %}
-        <label for="username">Имя пользователя:</label>
-        <input type="text" name="username" required>
+        <label for="username" class="login-label">Имя пользователя:</label>
+        <input type="text" name="username" class="login-input" required>
         
-        <label for="password">Пароль:</label>
-        <input type="password" name="password" required>
+        <label for="password" class="login-label">Пароль:</label>
+        <input type="password" name="password" class="login-input" required>
         
-        <button type="submit">Войти</button>
+        <button type="submit" class="login-button">Войти</button>
     </form>
-    <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
-    <p><a href="#">Забыли пароль?</a></p>
-    {%endblock%}
+    <p class="login-text"><a href="{% url 'request_password_reset' %}" class="login-link">Забыли пароль?</a></p>
+    <p class="login-text">Нет аккаунта? <a href="{% url 'register' %}" class="login-link">Зарегистрироваться</a></p>
+</div>
+</div>
+{% endblock %}

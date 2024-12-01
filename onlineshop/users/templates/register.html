@@ -1,18 +1,17 @@
-{%extends "base.html"%}
+{% extends "base.html" %}
 
-    {%block title %}Регистрация{%endblock%}
-  
-    {%block content%}
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+
+<div class="registration-container">
     <h2>Регистрация</h2>
-    <form method="post" enctype="multipart/form-data">
+    <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+    <form method="post" enctype="multipart/form-data" class="registration-form">
         {% csrf_token %}
         {{ form.as_p }}  
         {{ profile_form.as_p }}  
-        <button type="submit">Зарегистрироваться</button>
+        <button type="submit" class="btn-submit">Зарегистрироваться</button>
     </form>
-    <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
-    
-  
-    {%endblock%}
-
-
+</div>
+{% endblock %}

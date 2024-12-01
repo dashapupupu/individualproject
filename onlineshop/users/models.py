@@ -4,20 +4,17 @@ from django.core.validators import RegexValidator, EmailValidator
 from shop.models import Products
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile') 
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
-    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True) 
-    address = models.TextField(blank=True) 
-    email = models.EmailField(null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Телефонный номер должен быть введен в формате: '+999999999'. Допускается до 15 цифр.")
+    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)
+    address = models.TextField(blank=True)
+    email = models.EmailField(null=True, blank=True)  
     city = models.CharField(max_length=100, blank=True)
-  
     birth_date = models.DateField(null=True, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True) 
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
     def __str__(self):
         return f"Профиль пользователя: {self.user.username}"
-    
-
 
 class DeliveryAddress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delivery_addresses') 
@@ -35,7 +32,7 @@ class Order(models.Model):
     delivery_address = models.ForeignKey(DeliveryAddress, on_delete=models.SET_NULL, null=True, blank=True)
     delivery_type = models.CharField(max_length=20, choices=[('courier', 'Доставка курьером'), ('pickup', 'Самовывоз')], default='courier')
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=[('pending', 'Ожидание'), ('processing', 'Обработка'), ('ready', 'Готов'), ('delivered', 'Доставлен')], default='pending')
+    status = models.CharField(max_length=20, choices=[('pending', 'Ожидание'), ('processing', 'Обработка'), ('ready', 'Готов'), ('delivered', 'Доставлен')], default='Магазин не существует вы олух')
     ready_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -51,3 +48,8 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"Товар {self.product} в заказе #{self.order.id}"
+    
+
+
+
+

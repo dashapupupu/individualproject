@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Подтверждение кода восстановления пароля{% endblock %}
+
+{% block content %}
+<div class="code-confirmation-body">
+    <div class="code-confirmation-container">
+        <h2 class="code-confirmation-title">Подтверждение кода восстановления пароля</h2>
+        <form method="POST" class="code-confirmation-form">
+            {% csrf_token %}
+            <label for="code" class="code-confirmation-label">Введите код, отправленный на ваш email:</label>
+            <input type="text" name="code" class="code-confirmation-input" required>
+            <button type="submit" class="code-confirmation-button">Подтвердить код</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

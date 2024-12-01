@@ -9,11 +9,13 @@ from .models import UserProfile, DeliveryAddress
 
 
 
+from django import forms
+from .models import UserProfile
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        email = forms.EmailField(required=True)
         model = UserProfile
-        fields = ['email','phone_number', 'address', 'city', 'birth_date', 'avatar']
+        fields = ['email', 'phone_number', 'address', 'city', 'birth_date', 'avatar']
         widgets = {
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
             'avatar': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
@@ -21,7 +23,7 @@ class UserProfileForm(forms.ModelForm):
         labels = {
             'email': 'Адрес электронной почты',
             'phone_number': 'Номер телефона',
-            'address': 'Адрес' ,
+            'address': 'Адрес',
             'city': 'Город',
             'birth_date': 'Дата рождения (Необязательно)',
             'avatar': 'Аватар (Необязательно)',
@@ -39,3 +41,12 @@ class DeliveryAddressForm(forms.ModelForm):
             'address': 'Адрес доставки',
             'city': 'Город',
         }
+
+
+
+
+
+from django import forms
+
+class EmailForm(forms.Form):
+    email = forms.EmailField(label='Email')

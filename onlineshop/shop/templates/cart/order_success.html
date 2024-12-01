@@ -1,0 +1,10 @@
+{%extends "base.html"%}
+{%block content%}
+<h1>Спасибо за ваш заказ!</h1>
+<p>Ваш заказ номер {{ order.id }} успешно оформлен.</p>
+
+<p>Итоговая сумма: {{ order.total|floatformat:2 }}</p>
+<p>Адрес доставки: {{ order.delivery_address.city }}, {{ order.delivery_address.address }}</p>
+<p>Оплата производится при получении.</p>
+<p>Детали заказа были высланы вам на почту. Готовность заказа можете отследить в личном кабинете.</p>
+{%endblock%}
