@@ -6,9 +6,9 @@ from shop.models import Products
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Телефонный номер должен быть введен в формате: '+999999999'. Допускается до 15 цифр.")
-    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)
+    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True, unique=True)
     address = models.TextField(blank=True)
-    email = models.EmailField(null=True, blank=True)  
+    email = models.EmailField(null=True, blank=True, unique=True)  
     city = models.CharField(max_length=100, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)

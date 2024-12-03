@@ -24,7 +24,13 @@ def index(request):
         products = products.order_by('price')
     elif sort_option == 'desc':
         products = products.order_by('-price')
-
+        
+    for product in products:
+        if product.discount:
+           product.final_price = product.price * (1 - product.discount / 100)
+        else:
+            product.final_price = product.price
+        
     context = {
         'products': products,
         'categories_list': categories_list,

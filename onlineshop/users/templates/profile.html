@@ -13,7 +13,7 @@
                 {% if user_profile.avatar %}
                     <img src="{{ user_profile.avatar.url }}" alt="Аватар" class="rounded-circle mb-3" width="150">
                 {% else %}
-                    <img src="" alt="Аватар" class="rounded-circle mb-3" width="150">
+                    <img src="../../static/images/avatar-default.png" alt="Аватар" class="rounded-circle mb-3" width="150">
                 {% endif %}
                 <h5 class="mb-1">{{ user.username }}</h5>
                 <p class="text-muted">{{ user_profile.phone_number }}</p>
@@ -51,6 +51,7 @@
 
     <div class="orders">
         <h3>Мои заказы</h3>
+        <div class="table-responsive">
         {% if orders %}
             <table class="table table-bordered">
                 <thead class="thead-light">
@@ -73,7 +74,7 @@
                                 <a href="#" data-toggle="modal" data-target="#orderDetailsModal{{ order.id }}" class="btn btn-info btn-sm">Просмотреть</a>
                             </td>
                         </tr>
-
+        </div>
                         <!-- Модальное окно для деталей заказа -->
                         <div class="modal fade" id="orderDetailsModal{{ order.id }}" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel{{ order.id }}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
