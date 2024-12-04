@@ -125,7 +125,7 @@ def request_password_reset(request):
                 send_mail(
                     'Код для восстановления пароля',
                     f'Ваш код для восстановления пароля: {code}',
-                    'kopochko345@mail.ru',
+                    'dididi2037@mail.ru',
                     [email],
                     fail_silently=False,
                 )

@@ -172,12 +172,12 @@ def cart(request):
 
             user_profile = UserProfile.objects.get(user=order.user)
             user_email = user_profile.email
-            fixed_recipient = 'dididi2037@mail.ru'
+            fixed_recipient = 'kopochko345@mail.ru'
 
             send_mail(
                 'Подтверждение вашего заказа',
                 order_details,
-                'kopochko345@mail.ru',
+                'dididi2037@mail.ru',
                 [user_email, fixed_recipient],
                 fail_silently=False,
             )

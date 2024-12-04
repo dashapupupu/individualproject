@@ -19,10 +19,10 @@ EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'kopochko345@mail.ru'
+EMAIL_HOST_USER = 'dididi2037@mail.ru'
 #yandex#EMAIL_HOST_PASSWORD = 'pxhqzdufnalyvdkf'  
-DEFAULT_FROM_EMAIL = 'kopochko345@mail.ru'  
-EMAIL_HOST_PASSWORD = 't5zRRjNpwvhPfKTe7gds'
+DEFAULT_FROM_EMAIL = 'dididi2037@mail.ru'  
+EMAIL_HOST_PASSWORD = 'CyyeFehkZN44Wp3bRvMD'
 
 
 
