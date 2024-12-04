@@ -73,6 +73,7 @@ main {
 }
 
 .categories {
+    
     width: 250px;
     margin-right: 16px;
     background-color:transparent;
@@ -182,7 +183,12 @@ footer {
 
 
 
-
+.card-title {
+    margin-bottom: 10px; 
+    line-height: 1.5; 
+   
+    margin-right: 100px;
+}
 
 @media (max-width: 768px) {
     .col-md-3 {
@@ -796,6 +802,5 @@ textarea {
     font-size: 0.8em;
     margin-top: 5px;
 }
-
 
 

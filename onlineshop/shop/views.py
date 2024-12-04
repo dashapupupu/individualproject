@@ -66,7 +66,6 @@ def add_to_cart(request, product_id):
         else:
             cart.append({'product_id': product_id, 'quantity': 1})
         request.session['cart'] = cart
-
     return JsonResponse({'success': True, 'message': 'Товар успешно добавлен в корзину!'})
 
 def remove_from_cart(request, product_id):

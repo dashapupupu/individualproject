@@ -81,10 +81,15 @@
                                     <p class="card-text">{{ product.price|floatformat:2 }} ₽</p>
                                     {% endif %}
                                     <h5 class="card-title">{{ product.name }}</h5>
+                                    
 
                                     <a href="#" class="add-to-cart" data-product-id="{{ product.id }}">
                                         <img src="static/images/korzina.png" alt="картинка корзины">
                                     </a>
+                                    <div id="fixed-notification" style="display:none; position:fixed; top:20px; right:20px; background-color:#4CAF50; color:white; padding:15px; border-radius:5px; z-index:1000;">
+                                        
+                                    </div>
+                                
                                 </div>
                             </div>
                         </div>
@@ -122,6 +127,7 @@
     </footer>
 
     <script src="scripts.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -130,10 +136,10 @@
                 var productId = $(this).data('product-id');
 
                 $.ajax({
-                    url: "{% url 'add_to_cart' 0 %}".replace('0', productId),
+                    url: "{% url 'add_to_cart' 0 %}".replace('0', productId), 
                     method: 'POST',
                     data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                        csrfmiddlewaretoken: '{{ csrf_token }}' 
                     },
                     success: function(response) {
                         $('#fixed-notification').text('Товар успешно добавлен в корзину!').fadeIn().delay(2000).fadeOut();
