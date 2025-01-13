@@ -1,7 +1,9 @@
 from django.urls import path
 from .views import register, user_login, profile, edit_profile, add_delivery_address, delete_delivery_address, logout_view, request_password_reset, verify_code,reset_password
 from django.contrib.auth import views as auth_views
+from .views import UserView
 
+app_name = "users"
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -13,9 +15,18 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('request-password-reset/', request_password_reset, name='request_password_reset'),
     path('verify-code/', verify_code, name='verify_code'),
-    path('reset-password/', reset_password, name='reset_password')
+    path('reset-password/', reset_password, name='reset_password'),
+    path('users/', UserView.as_view()),
    
 ]
+
+
+
+# app_name will help us do a reverse look-up latter.
+urlpatterns = [
+ 
+]
+
     
   
     

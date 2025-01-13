@@ -8,6 +8,8 @@ from .forms import UserProfileForm, DeliveryAddressForm, EmailForm
 from shop.models import Cart, Products, CartItem
 import random
 from django.core.mail import send_mail
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 def register(request):
     if request.user.is_authenticated:
@@ -163,3 +165,8 @@ def reset_password(request):
         else:
             messages.error(request, 'Сессия истекла. Пожалуйста, начните процесс сброса пароля заново.')
     return render(request, 'reset_password.html')
+
+class UserView(APIView):
+ def get(self, request):
+    users = User.objects.all()
+    return Response({"users": users})
