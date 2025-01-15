@@ -19,8 +19,6 @@ urlpatterns = [
     path('cart/', views.cart, name='cart'),
     path('users/', include('users.urls')),
     path('api/', include('users.urls')),
-
-
 ]
 
 from django.conf import settings

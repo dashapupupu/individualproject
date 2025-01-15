@@ -51,9 +51,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'shop',
     'users',
-    'rest_framework',
     'article',
 ]
 SESSION_COOKIE_NAME = 'sessionid'

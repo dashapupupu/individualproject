@@ -166,7 +166,13 @@ def reset_password(request):
             messages.error(request, 'Сессия истекла. Пожалуйста, начните процесс сброса пароля заново.')
     return render(request, 'reset_password.html')
 
-class UserView(APIView):
- def get(self, request):
-    users = User.objects.all()
-    return Response({"users": users})
+
+
+
+from .serializers import UserProfileSerializer
+
+class UserProfileView(APIView):
+    def get(self, request):
+        user_profiles = UserProfile.objects.select_related('user').all()
+        serializer = UserProfileSerializer(user_profiles, many=True)
+        return Response(serializer.data)

@@ -14,7 +14,7 @@ class UserProfile(models.Model):
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
     def __str__(self):
-        return f"Профиль пользователя: {self.user.username}"
+        return f"Профиль пользователя: {self.user.username}" 
 
 class DeliveryAddress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delivery_addresses') 
