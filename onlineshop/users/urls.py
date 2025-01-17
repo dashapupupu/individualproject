@@ -16,7 +16,8 @@ urlpatterns = [
     path('verify-code/', verify_code, name='verify_code'),
     path('reset-password/', reset_password, name='reset_password'),
     path('users/', UserProfileView.as_view()),
-   
+    path('users/<int:pk>', UserProfileView.as_view())
+
 ]
 
 
