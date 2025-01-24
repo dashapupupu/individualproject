@@ -170,30 +170,42 @@ def reset_password(request):
 from rest_framework.generics import get_object_or_404
 from .serializers import UserProfileSerializer
 from rest_framework import status
+from rest_framework.views import APIView
+from .models import UserProfile
+from .serializers import UserProfileSerializer
 
 
-class UserProfileView(APIView):
+class UserProfileView(APIView):  # Новый APIView для списка
     def get(self, request):
-        user_profiles = UserProfile.objects.select_related('user').all()
+        user_profiles = UserProfile.objects.all()
         serializer = UserProfileSerializer(user_profiles, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
-        user_profiles = request.data.get('user')
-        # Create an article from the above data
-        serializer = UserProfileSerializer(data=user_profiles)
+        user_profile_data = request.data.get("user_profile", request.data) 
+        serializer = UserProfileSerializer(data=user_profile_data)
         if serializer.is_valid(raise_exception=True):
             user_profile_saved = serializer.save()
-            return Response({"success": "User '{}' created successfully".format(user_profile_saved.id)}, status=status.HTTP_201_CREATED)
+            return Response({"success": f"User '{user_profile_saved.id}' created successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-         
+
+
+class UserProfileDetailView(APIView): 
+    def get(self, request, pk):
+        user_profile = get_object_or_404(UserProfile.objects.all(), pk=pk)
+        serializer = UserProfileSerializer(user_profile)
+        return Response(serializer.data)
+
     def put(self, request, pk):
-        saved_user_profiles = get_object_or_404(UserProfile.objects.all(), pk=pk)
-        user_profiles = request.data.get('user')
-        serializer = UserProfileSerializer(instance=saved_user_profiles, data=user_profiles, partial=True)
+        user_profile = get_object_or_404(UserProfile.objects.all(), pk=pk)
+        data = request.data.get("user_profile", request.data) 
+        serializer = UserProfileSerializer(instance=user_profile, data=data, partial=True)
         if serializer.is_valid(raise_exception=True):
-            user_profiles = serializer.save()
-            return Response({
-            "success": "User '{}' updated successfully".format(user_profiles.id)
-            })
+            user_profile_saved = serializer.save()
+            return Response({"success": f"User '{user_profile_saved.id}' updated successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk): 
+        user_profile = get_object_or_404(UserProfile.objects.all(), pk=pk)
+        user_profile.delete()
+        return Response({"message": "User with id `{}` has been deleted.".format(pk)}, status=204)
