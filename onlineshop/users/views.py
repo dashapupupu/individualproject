@@ -169,7 +169,7 @@ def reset_password(request):
 
 from rest_framework.generics import get_object_or_404
 from .serializers import UserProfileSerializer
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.mixins import ListModelMixin
@@ -184,18 +184,77 @@ class UserProfileView(ListModelMixin, GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+    def post(self, request, pk=None): # Registration
+        if pk:
+            return Response({"error":"Invalid request. POST requests should not have a pk"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user_profile = serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def put(self, request, pk): 
+        profile = self.get_object(pk)
+        if not profile:
+            return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        if profile.user != request.user:
+            return Response({'error':'Unauthorized to update this profile'}, status=status.HTTP_401_UNAUTHORIZED) #Additional security check
+
+        serializer = UserProfileSerializer(profile, data=request.data, partial=True) #partial=True allows partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request, pk): 
+        profile = self.get_object(pk)
+        if not profile:
+            return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        if profile.user != request.user:
+            return Response({'error':'Unauthorized to delete this profile'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        profile.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+from rest_framework.permissions import AllowAny
+class UserLoginView(APIView):
+    authentication_classes = [] 
+    permission_classes = [AllowAny]
+
+    def post(self, request, format=None):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    
 
 
 class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     lookup_field = 'pk'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # from rest_framework.generics import get_object_or_404
