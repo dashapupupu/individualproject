@@ -167,6 +167,32 @@ def reset_password(request):
     return render(request, 'reset_password.html')
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from rest_framework.generics import get_object_or_404
 from .serializers import UserProfileSerializer
 from rest_framework import status, viewsets
@@ -174,7 +200,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.mixins import ListModelMixin
 from .models import UserProfile
-from .serializers import UserProfileSerializer
+
 
 # User = get_user_model()
 
@@ -245,16 +271,51 @@ class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
 
 
 
+from rest_framework.decorators import api_view
+
+@api_view(['GET', 'POST'])
+def snippet_list(request, format=None):
+    """
+    List all user profiles or create a new user profile (registration).
+    """
+    if request.method == 'GET':
+        profiles = UserProfile.objects.all()
+        serializer = UserProfileSerializer(profiles, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST': # Registration
+        serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
+@api_view(['GET', 'PUT', 'DELETE'])
+def snippet_detail(request, pk, format=None):
+    """
+    Retrieve, update, or delete a user profile.
+    """
+    try:
+        profile = UserProfile.objects.get(pk=pk)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    if request.method == 'GET':
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
 
+    elif request.method == 'PUT':
+        serializer = UserProfileSerializer(profile, data=request.data, partial=True) #partial=True for partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
+    elif request.method == 'DELETE':
+        profile.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # from rest_framework.generics import get_object_or_404
