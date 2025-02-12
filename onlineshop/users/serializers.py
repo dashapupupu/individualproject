@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import UserProfile, Order,DeliveryAddress
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -42,3 +42,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance        
+    
+
+    
+class OrderSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    delivery_address = serializers.PrimaryKeyRelatedField(queryset=DeliveryAddress.objects.all(), allow_null=True) 
+    class Meta:
+        model = Order
+        fields = ('id', 'user', 'order_date', 'delivery_address', 'delivery_type', 'total', 'status', 'ready_at')
+        read_only_fields = ('id', 'order_date')

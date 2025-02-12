@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register, user_login, profile, edit_profile, add_delivery_address, delete_delivery_address, logout_view, request_password_reset, verify_code,reset_password, snippet_detail, snippet_list
+from .views import register, user_login, profile, edit_profile, add_delivery_address, delete_delivery_address, logout_view, request_password_reset, verify_code,reset_password
 from django.contrib.auth import views as auth_views
 from .views import UserProfileView, UserProfileDetailView
 # from .views import user_profile_list, user_profile_detail
@@ -22,8 +22,9 @@ urlpatterns = [
     path('reset-password/', reset_password, name='reset_password'),
     path('users/', UserProfileView.as_view(), name='userprofile'),
     path('users/<int:pk>/', UserProfileDetailView.as_view(), name='userprofile-detail'),
-    path('snippets/', views.snippet_list),
-    path('snippets/<int:pk>/', views.snippet_detail),
+    path('orders/', views.OrderListCreateView.as_view(), name='order-list-create'), 
+    path('orders/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'), 
+
     # path('users/', views.user_profile_list, name='userprofile'),
     # path('users/<int:pk>/', views.user_profile_detail, name='userprofile-detail'),
 
