@@ -200,6 +200,13 @@ from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.mixins import ListModelMixin
 from .models import UserProfile
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import authenticate, login
+from .models import UserProfile
+from .serializers import UserProfileSerializer
 
 
 # User = get_user_model()
@@ -213,14 +220,11 @@ class UserProfileView(ListModelMixin, GenericAPIView):
     def post(self, request, pk=None): # Registration
         if pk:
             return Response({"error":"Invalid request. POST requests should not have a pk"}, status=status.HTTP_400_BAD_REQUEST)
-
         serializer = UserProfileSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
     def put(self, request, pk): 
         profile = self.get_object(pk)
         if not profile:
@@ -233,8 +237,6 @@ class UserProfileView(ListModelMixin, GenericAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
     def delete(self, request, pk): 
         profile = self.get_object(pk)
         if not profile:
@@ -244,10 +246,13 @@ class UserProfileView(ListModelMixin, GenericAPIView):
 
         profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
-from rest_framework.permissions import AllowAny
+
+class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    lookup_field = 'pk'
+
 class UserLoginView(APIView):
-    authentication_classes = [] 
     permission_classes = [AllowAny]
 
     def post(self, request, format=None):
@@ -257,52 +262,36 @@ class UserLoginView(APIView):
         if user is not None:
             login(request, user)
             return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    
-
-
-class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    lookup_field = 'pk'
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 from rest_framework import generics, permissions
 from users.models import Order
 from users.serializers import OrderSerializer
+from .serializers import ProductSerializer
 
 class OrderListCreateView(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
     def perform_create(self, serializer):
-        # The user should be retrieved from the request when creating
+        # Устанавливаем пользователя на основе текущего запроса
         serializer.save(user=self.request.user)
 
     def get_serializer_context(self):
-        """
-        Extra context provided to the serializer class.
-        """
         return {
             'request': self.request,
             'format': self.format_kwarg,
             'view': self
         }
-    
 
 
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    lookup_field = 'pk'  # Use pk (primary key) to find the order
-
+    lookup_field = 'pk'
 
     def get_serializer_context(self):
-        """
-        Extra context provided to the serializer class.
-        """
         return {
             'request': self.request,
             'format': self.format_kwarg,
@@ -310,12 +299,22 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
         }
 
     def perform_update(self, serializer):
+        # Сохраняем обновленный экземпляр заказа
         serializer.save()
 
     def perform_destroy(self, instance):
+        # Удаляем экземпляр заказа
         instance.delete()
 
 
+class ProductListCreateView(generics.ListCreateAPIView):
+    queryset = Products.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Products.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
 
 
 
