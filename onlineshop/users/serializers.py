@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password')
-        extra_kwargs = {'password': {'write_only': True}} 
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -20,12 +20,13 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-    
+
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=True)
+
     class Meta:
         model = UserProfile
-        fields = ('id','phone_number', 'address', 'email', 'city', 'birth_date', 'avatar', 'user')
+        fields = ('id', 'phone_number', 'address', 'email', 'city', 'birth_date', 'avatar', 'user')
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
@@ -34,13 +35,25 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return profile
 
     def update(self, instance, validated_data):
-        user_data = validated_data.pop('user')
+        user_data = validated_data.pop('user', {})
         user = instance.user
+
+        # Проверка уникальности имени пользователя
+        username = user_data.get('username', None)
+        if username and username != user.username:
+            if User.objects.filter(username=username).exists():
+                raise serializers.ValidationError({"user": {"username": ["Пользователь с таким именем уже существует."]}})
+
+        # Обновление полей пользователя
         for attr, value in user_data.items():
-            if attr != 'password': 
+            if attr == 'password':
+                if value:  # Обновляем пароль только если он не пустой
+                    user.set_password(value)
+            else:
                 setattr(user, attr, value)
         user.save()
 
+        # Обновление остальных полей профиля
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
@@ -79,15 +92,19 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User .objects.all())
     delivery_address = DeliveryAddressSerializer(allow_null=True)
-    order_items = OrderItemSerializer(many=True, source='items')  # Исправлено на 'items'
+    order_items = serializers.SerializerMethodField()  # Используем SerializerMethodField
 
     class Meta:
         model = Order
-        fields = ('id', 'user', 'order_date', 'delivery_address', 'order_items', 'delivery_type', 'total', 'status', 'ready_at')
+        fields = ('id', 'user', 'order_date', 'delivery_address', 'order_items',  'delivery_type', 'status', 'ready_at')
         read_only_fields = ('id', 'order_date')
 
+    def get_order_items(self, obj):
+        # Возвращаем сериализованные данные order_items
+        return OrderItemSerializer(obj.items.all(), many=True).data
+
     def create(self, validated_data):
-        items_data = validated_data.pop('items')
+        items_data = validated_data.pop('items', [])  # Изменено на items
         delivery_address_data = validated_data.pop('delivery_address', None)
 
         if delivery_address_data:
