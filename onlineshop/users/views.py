@@ -262,7 +262,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Устанавливаем пользователя на основе текущего запроса
-        serializer.save(user=self.request.user)
+        serializer.save()
 
     def get_serializer_context(self):
         return {
@@ -302,6 +302,33 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
     lookup_field = 'pk'
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.http import HttpResponse
+from django.http import JsonResponse
+
+class ApiRoot(APIView):
+    def get(self, request, format=None):
+        data = {
+            "Ссылки": [
+                {
+                 
+                   
+                    "Пользователи": request.build_absolute_uri('/api/users/')
+                },
+                {
+                  
+                    
+                    "Продукты": request.build_absolute_uri('/api/products/')
+                },
+                {
+                 
+                    "Заказы": request.build_absolute_uri('/api/orders/')
+                },
+             
+            ]
+        }
+        return Response(data)
 
 
 
@@ -317,8 +344,6 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-
-from rest_framework.decorators import api_view
 
 
 

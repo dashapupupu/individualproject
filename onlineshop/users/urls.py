@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 from .views import UserProfileView, UserProfileDetailView, ProductDetailView, ProductListCreateView
 # from .views import user_profile_list, user_profile_detail
 from users import views
-
+from .views import ApiRoot
 from rest_framework.urlpatterns import format_suffix_patterns
 
 
@@ -26,6 +26,7 @@ urlpatterns = [
     path('orders/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'), 
     path('products/', ProductListCreateView.as_view(), name='product-list-create'),
     path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
+    path('', ApiRoot.as_view(), name='api-root')
 
     # path('users/', views.user_profile_list, name='userprofile'),
     # path('users/<int:pk>/', views.user_profile_detail, name='userprofile-detail'),
