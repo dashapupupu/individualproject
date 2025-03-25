@@ -262,7 +262,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Устанавливаем пользователя на основе текущего запроса
-        serializer.save()
+        serializer.save(user=self.request.user)
 
     def get_serializer_context(self):
         return {

@@ -67,38 +67,73 @@ class DeliveryAddressSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
-        fields = ['id', 'name']  # Отобразите необходимые поля
+        fields = ('id', 'name', 'price', 'discount', 'description', 'categories', 'image', 'proizvoditel')
+        read_only_fields = ('id',)  # Поле id будет только для чтения
+
+    def create(self, validated_data):
+        # Создание нового продукта
+        product = Products.objects.create(**validated_data)
+        return product
+
+    def update(self, instance, validated_data):
+        # Обновление существующего продукта
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Products.objects.all())
+    product_name = serializers.CharField(source='product.name', read_only=True)  # Читаем только имя продукта
 
     class Meta:
         model = OrderItem
-        fields = ['product', 'quantity']
-    
-    def validate(self, attrs):
-        # Убедитесь, что есть хотя бы одно поле продукта
-        if attrs['quantity'] <= 0:
-            raise serializers.ValidationError({"quantity": "Количество должно быть положительным."})
-        return attrs
+        fields = ('id', 'product', 'product_name', 'quantity', 'price')
 
 class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True)
+    user = serializers.PrimaryKeyRelatedField(queryset=User .objects.all())
+    delivery_address = DeliveryAddressSerializer(allow_null=True)
+    order_items = serializers.SerializerMethodField()  # Используем SerializerMethodField
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'order_date', 'delivery_address', 'delivery_type', 'total', 'status', 'ready_at', 'items']
+        fields = ('id', 'user', 'order_date', 'delivery_address', 'order_items',  'delivery_type', 'status', 'ready_at')
+        read_only_fields = ('id', 'order_date')
+
+    def get_order_items(self, obj):
+        # Возвращаем сериализованные данные order_items
+        return OrderItemSerializer(obj.items.all(), many=True).data
 
     def create(self, validated_data):
-        items_data = validated_data.pop('items')
+        items_data = validated_data.pop('items', [])  # Изменено на items
+        delivery_address_data = validated_data.pop('delivery_address', None)
+
+        if delivery_address_data:
+            delivery_address = DeliveryAddress.objects.create(**delivery_address_data)
+            validated_data['delivery_address'] = delivery_address
+
         order = Order.objects.create(**validated_data)
-        total = 0
-        
+
         for item_data in items_data:
             OrderItem.objects.create(order=order, **item_data)
-            total += item_data['quantity'] * item_data['price']  # Считаем общую стоимость
-        
-        order.total = total  # Устанавливаем общую стоимость заказа
-        order.save()
-        
+
         return order
+
+    def update(self, instance, validated_data):
+        items_data = validated_data.pop('items', None)
+        delivery_address_data = validated_data.pop('delivery_address', None)
+
+        if delivery_address_data:
+            for attr, value in delivery_address_data.items():
+                setattr(instance.delivery_address, attr, value)
+            instance.delivery_address.save()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if items_data is not None:
+            instance.items.all().delete()
+            for item_data in items_data:
+                OrderItem.objects.create(order=instance, **item_data)
+
+        return instance
