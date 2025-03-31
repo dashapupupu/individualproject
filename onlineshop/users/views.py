@@ -203,7 +203,7 @@ from .models import UserProfile
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.contrib.auth import authenticate, login, logout
 from .models import UserProfile
 from .serializers import UserProfileSerializer
@@ -211,42 +211,29 @@ from .serializers import UserProfileSerializer
 
 # User = get_user_model()
 
-class UserProfileView(ListCreateAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [AllowAny]  # Только для аутентифицированных пользователей
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):  # Регистрация
-        serializer = UserProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
+class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     lookup_field = 'pk'
-    permission_classes = [AllowAny]
 
-    def put(self, request, *args, **kwargs):
-        profile = self.get_object()
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
-        serializer = UserProfileSerializer(profile, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, *args, **kwargs):
-        profile = self.get_object()
-        if profile.user != request.user:
-            return Response({'error': 'Unauthorized to delete this profile'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        profile.delete()
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response(
+                {'error': 'Unauthorized to delete this profile'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -277,44 +264,49 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 
+from rest_framework.parsers import MultiPartParser, FormParser
 
+class ProductViewSet(viewsets.ModelViewSet):
 
-class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
+    parser_classes = (MultiPartParser, FormParser)  # Для загрузки изображений
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # Запись только для авторизованных
 
-class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Products.objects.all()
-    serializer_class = ProductSerializer
-    lookup_field = 'pk'
+    def get_queryset(self):
+        """
+        Опциональная фильтрация (пример)
+        """
+        queryset = super().get_queryset()
+        
+        # Фильтр по категории
+        category_id = self.request.query_params.get('category')
+        if category_id:
+            queryset = queryset.filter(categories_id=category_id)
+            
+        # Фильтр по производителю
+        manufacturer_id = self.request.query_params.get('proizvoditel')
+        if manufacturer_id:
+            queryset = queryset.filter(proizvoditel_id=manufacturer_id)
+            
+        return queryset
+
+    def perform_create(self, serializer):
+        """
+        Автоматическая обработка при создании продукта
+        """
+        serializer.save()  # Все необходимые поля уже в validated_data
+
+    def perform_update(self, serializer):
+        """
+        Дополнительная обработка при обновлении
+        """
+        serializer.save()
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.http import JsonResponse
-
-class ApiRoot(APIView):
-    def get(self, request, format=None):
-        data = {
-            "Ссылки": [
-                {
-                 
-                   
-                    "Пользователи": request.build_absolute_uri('/api/users/')
-                },
-                {
-                  
-                    
-                    "Продукты": request.build_absolute_uri('/api/products/')
-                },
-                {
-                 
-                    "Заказы": request.build_absolute_uri('/api/orders/')
-                },
-             
-            ]
-        }
-        return Response(data)
 
 
 

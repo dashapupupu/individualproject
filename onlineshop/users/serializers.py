@@ -12,50 +12,80 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {
+                'write_only': True,
+                'required': False
+            },
+            'username': {
+                'required': False
+            }
+        }
 
-    def create(self, validated_data):
-        password = validated_data.pop('password')
-        user = User(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
+    def validate_username(self, value):
+        """Проверка уникальности username только при изменении"""
+        if not value:
+            return getattr(self.instance, 'username', '')
+            
+        if self.instance and value == self.instance.username:
+            return value
+            
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Пользователь с таким именем уже существует.")
+        return value
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(required=True)
+    user = UserSerializer(required=False)
+    email = serializers.EmailField(source='user.email', required=False)
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'phone_number', 'address', 'email', 'city', 'birth_date', 'avatar', 'user')
+        fields = ('id', 'phone_number', 'address', 'email', 'city',
+                 'birth_date', 'avatar', 'user')
+        extra_kwargs = {
+            'phone_number': {'required': False},
+            'address': {'required': False},
+            'city': {'required': False},
+            'birth_date': {'required': False},
+            'avatar': {'required': False}
+        }
 
     def create(self, validated_data):
-        user_data = validated_data.pop('user')
-        user = UserSerializer().create(user_data)
+        user_data = validated_data.pop('user', {})
+        email = user_data.pop('email', None)
+        
+        # Создаем пользователя
+        user = User.objects.create_user(
+            username=user_data.get('username'),
+            password=user_data.get('password'),
+            email=email
+        )
+        
+        # Создаем профиль
         profile = UserProfile.objects.create(user=user, **validated_data)
         return profile
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', {})
-        user = instance.user
-
-        # Проверка уникальности имени пользователя
-        username = user_data.get('username', None)
-        if username and username != user.username:
-            if User.objects.filter(username=username).exists():
-                raise serializers.ValidationError({"user": {"username": ["Пользователь с таким именем уже существует."]}})
-
-        # Обновление полей пользователя
-        for attr, value in user_data.items():
-            if attr == 'password':
-                if value:  # Обновляем пароль только если он не пустой
-                    user.set_password(value)
-            else:
-                setattr(user, attr, value)
-        user.save()
-
-        # Обновление остальных полей профиля
+        email = user_data.pop('email', None)
+        
+        # Обновляем профиль
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+        
+        # Обновляем пользователя
+        if user_data or email is not None:
+            user = instance.user
+            if email is not None:
+                user.email = email
+            if user_data:
+                for attr, value in user_data.items():
+                    if attr == 'password' and value:
+                        user.set_password(value)
+                    else:
+                        setattr(user, attr, value)
+            user.save()
+        
         instance.save()
         return instance
     
@@ -82,6 +112,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ['id', 'product', 'product_id', 'quantity', 'price']
         read_only_fields = ['id', 'product', 'price']
+
+from rest_framework import serializers
+from .models import Order, OrderItem, DeliveryAddress, Products
+
+from rest_framework import serializers
+from .models import Order, OrderItem, Products, DeliveryAddress
+
+from rest_framework import serializers
+from .models import Order, OrderItem, Products, DeliveryAddress
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True, source='items', read_only=True)

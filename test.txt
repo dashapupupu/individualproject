@@ -1,0 +1,62 @@
+///
+PUT users
+{
+    "address": "Новый адрес",
+    "user": {
+        "email": "new@email.com"
+    }
+}
+
+///
+PATCH USERS
+{
+    "email": "new@example.com"
+}
+
+///
+
+POST users
+
+{
+    "user": {
+        "username": "newuser",
+        "password": "secret123",
+        "email": "user@example.com"
+    },
+    "phone_number": "+79991234567"
+}
+
+///
+
+
+
+login 
+{
+    "username": "mama123",
+    "password": "123"
+}
+
+
+////
+POST ORDERS
+
+
+{
+    "delivery_type": "courier",
+    "products": [
+        {
+            "id": 1,
+            "quantity": 2
+        },
+        {
+            "id": 3,
+            "quantity": 1
+        }
+    ],
+    "delivery_address": {
+        "address": "ул. Примерная, 123",
+        "city": "Москва"
+    }
+}
+
+////
