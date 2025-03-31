@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register, user_login, profile, edit_profile, add_delivery_address, delete_delivery_address, logout_view, request_password_reset, verify_code,reset_password, LogoutView
+from .views import register, user_login, profile, edit_profile, add_delivery_address, delete_delivery_address, logout_view, request_password_reset, verify_code,reset_password, LogoutView, OrderViewSet
 from django.contrib.auth import views as auth_views
 from .views import UserProfileView, UserProfileDetailView, ProductDetailView, ProductListCreateView
 # from .views import user_profile_list, user_profile_detail
@@ -11,8 +11,10 @@ from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 
 router = DefaultRouter()
-router.register(r'logun', LoginView, basename='logun')
-router.register(r'logut', LogoutView, basename='logut')
+router.register(r'llogun', LoginView, basename='llogun')
+router.register(r'llogut', LogoutView, basename='llogut')
+# router.register(r'pproducts', ProductListCreateView)
+router.register(r'oorders', OrderViewSet)
 
 
 
@@ -29,8 +31,8 @@ urlpatterns = [
     path('reset-password/', reset_password, name='reset_password'),
     path('users/', UserProfileView.as_view(), name='userprofile'),
     path('users/<int:pk>/', UserProfileDetailView.as_view(), name='userprofile-detail'),
-    path('orders/', views.OrderListCreateView.as_view(), name='order-list-create'), 
-    path('orders/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'), 
+    # path('orders/', views.OrderListCreateView.as_view(), name='order-list-create'), 
+    # path('orders/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'), 
     path('products/', ProductListCreateView.as_view(), name='product-list-create'),
     path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('', ApiRoot.as_view(), name='api-root'),

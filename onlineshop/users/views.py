@@ -203,7 +203,7 @@ from .models import UserProfile
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from .models import UserProfile
 from .serializers import UserProfileSerializer
@@ -256,38 +256,27 @@ from users.models import Order
 from users.serializers import OrderSerializer
 from .serializers import ProductSerializer
 
-class OrderListCreateView(generics.ListCreateAPIView):
+
+
+class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
+    permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        # Пользователь видит только свои заказы
+        return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    def get_serializer_context(self):
-        return {
-            'request': self.request,
-            'format': self.format_kwarg,
-            'view': self
-        }
+    def get_serializer_class(self):
+        if self.action == 'retrieve' or self.action == 'list':
+            return OrderSerializer
+        return OrderSerializer
 
 
-class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-    lookup_field = 'pk'
 
-    def get_serializer_context(self):
-        return {
-            'request': self.request,
-            'format': self.format_kwarg,
-            'view': self
-        }
-
-    def perform_update(self, serializer):
-        serializer.save()
-
-    def perform_destroy(self, instance):
-        instance.delete()
 
 
 class ProductListCreateView(generics.ListCreateAPIView):
