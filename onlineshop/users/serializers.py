@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import UserProfile, Order, DeliveryAddress, OrderItem
 from shop.models import Products
-
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -114,11 +114,11 @@ class OrderSerializer(serializers.ModelSerializer):
         order = Order(**validated_data)
         for item_data in items_data:
             try:
-                product = Product.objects.get(pk=item_data['product'])
+                product = Products.objects.get(pk=item_data['product'])
                 item_total = product.price * item_data['quantity']
                 total += item_total
                 OrderItem.objects.create(order=order, product=product, **item_data)
-            except Product.DoesNotExist:
+            except Products.DoesNotExist:
                 raise serializers.ValidationError("Такого продукта не существует.")
 
         order.total = total
@@ -147,7 +147,7 @@ class OrderSerializer(serializers.ModelSerializer):
             instance.items.all().delete()
             for item_data in items_data:
                 try:
-                    product = Product.objects.get(pk=item_data['product'])
+                    product = Products.objects.get(pk=item_data['product'])
                     OrderItem.objects.create(order=instance, product=product, **item_data)
                 except ObjectDoesNotExist:
                     raise serializers.ValidationError("Такого продукта не существует.")

@@ -204,7 +204,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import UserProfile
 from .serializers import UserProfileSerializer
 
@@ -331,15 +331,47 @@ class ApiRoot(APIView):
 
 
 
+from django.contrib.auth import authenticate
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.models import Token
+
+class LoginView(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+
+    def create(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        # Аутентификация пользователя
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)  # Устанавливаем сессию
+            
+            # Получаем или создаем токен
+            token, created = Token.objects.get_or_create(user=user)
+
+            # Возвращаем успешный ответ с токеном и именем пользователя
+            return Response({
+                "message": "Login successful",
+                "token": token.key,
+                "username": user.username
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "error": "Invalid Credentials"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+from rest_framework.permissions import IsAuthenticated
 
 
+class LogoutView(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
 
-
-
-
-
-
-
+    def create(self, request):
+        logout(request)
+        return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
 
 
 

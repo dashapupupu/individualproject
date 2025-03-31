@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'shop',
     'users',
     'article',
+    'rest_framework.authtoken',
 ]
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  

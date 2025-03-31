@@ -1,11 +1,18 @@
 from django.urls import path
-from .views import register, user_login, profile, edit_profile, add_delivery_address, delete_delivery_address, logout_view, request_password_reset, verify_code,reset_password
+from .views import register, user_login, profile, edit_profile, add_delivery_address, delete_delivery_address, logout_view, request_password_reset, verify_code,reset_password, LogoutView
 from django.contrib.auth import views as auth_views
 from .views import UserProfileView, UserProfileDetailView, ProductDetailView, ProductListCreateView
 # from .views import user_profile_list, user_profile_detail
 from users import views
 from .views import ApiRoot
 from rest_framework.urlpatterns import format_suffix_patterns
+from .views import LoginView
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+
+router = DefaultRouter()
+router.register(r'logun', LoginView, basename='logun')
+router.register(r'logut', LogoutView, basename='logut')
 
 
 
@@ -26,7 +33,8 @@ urlpatterns = [
     path('orders/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'), 
     path('products/', ProductListCreateView.as_view(), name='product-list-create'),
     path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
-    path('', ApiRoot.as_view(), name='api-root')
+    path('', ApiRoot.as_view(), name='api-root'),
+    path('api/', include(router.urls))
 
     # path('users/', views.user_profile_list, name='userprofile'),
     # path('users/<int:pk>/', views.user_profile_detail, name='userprofile-detail'),
@@ -34,7 +42,7 @@ urlpatterns = [
 ]
 
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns)
 
 
 # from django.urls import path
