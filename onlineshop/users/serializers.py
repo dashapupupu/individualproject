@@ -68,15 +68,14 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ('id', 'name', 'price', 'discount', 'description', 'categories', 'image', 'proizvoditel')
-        read_only_fields = ('id',)  # Поле id будет только для чтения
+        read_only_fields = ('id',) 
 
     def create(self, validated_data):
-        # Создание нового продукта
         product = Products.objects.create(**validated_data)
         return product
 
     def update(self, instance, validated_data):
-        # Обновление существующего продукта
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
@@ -87,12 +86,12 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ('id', 'product', 'product_name', 'quantity', 'price')
+        fields = ('id', 'product_name', 'quantity', 'price')
 
 class OrderSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User .objects.all())
     delivery_address = DeliveryAddressSerializer(allow_null=True)
-    order_items = serializers.SerializerMethodField()  # Используем SerializerMethodField
+    order_items = serializers.SerializerMethodField()  
 
     class Meta:
         model = Order
@@ -100,40 +99,57 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'order_date')
 
     def get_order_items(self, obj):
-        # Возвращаем сериализованные данные order_items
         return OrderItemSerializer(obj.items.all(), many=True).data
 
     def create(self, validated_data):
-        items_data = validated_data.pop('items', [])  # Изменено на items
+        items_data = validated_data.pop('items', []) 
         delivery_address_data = validated_data.pop('delivery_address', None)
+        user = validated_data.get('user') 
 
         if delivery_address_data:
-            delivery_address = DeliveryAddress.objects.create(**delivery_address_data)
+            delivery_address = DeliveryAddress.objects.create(user=user, **delivery_address_data)
             validated_data['delivery_address'] = delivery_address
 
-        order = Order.objects.create(**validated_data)
-
+        total = 0
+        order = Order(**validated_data)
         for item_data in items_data:
-            OrderItem.objects.create(order=order, **item_data)
+            try:
+                product = Product.objects.get(pk=item_data['product'])
+                item_total = product.price * item_data['quantity']
+                total += item_total
+                OrderItem.objects.create(order=order, product=product, **item_data)
+            except Product.DoesNotExist:
+                raise serializers.ValidationError("Такого продукта не существует.")
+
+        order.total = total
+        order.save() 
 
         return order
+
 
     def update(self, instance, validated_data):
         items_data = validated_data.pop('items', None)
         delivery_address_data = validated_data.pop('delivery_address', None)
 
+        # Обновление адреса доставки
         if delivery_address_data:
             for attr, value in delivery_address_data.items():
                 setattr(instance.delivery_address, attr, value)
             instance.delivery_address.save()
 
+        # Обновление полей заказа
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
+        # Обновление элементов заказа
         if items_data is not None:
             instance.items.all().delete()
             for item_data in items_data:
-                OrderItem.objects.create(order=instance, **item_data)
+                try:
+                    product = Product.objects.get(pk=item_data['product'])
+                    OrderItem.objects.create(order=instance, product=product, **item_data)
+                except ObjectDoesNotExist:
+                    raise serializers.ValidationError("Такого продукта не существует.")
 
         return instance

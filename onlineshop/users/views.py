@@ -261,8 +261,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
 
     def perform_create(self, serializer):
-        # Устанавливаем пользователя на основе текущего запроса
-        serializer.save()
+        serializer.save(user=self.request.user)
 
     def get_serializer_context(self):
         return {
@@ -285,11 +284,9 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
         }
 
     def perform_update(self, serializer):
-        # Сохраняем обновленный экземпляр заказа
         serializer.save()
 
     def perform_destroy(self, instance):
-        # Удаляем экземпляр заказа
         instance.delete()
 
 
