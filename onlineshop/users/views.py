@@ -353,6 +353,7 @@ class LogoutView(viewsets.ViewSet):
     def create(self, request):
         logout(request)
         return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+    
 
 
 

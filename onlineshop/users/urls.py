@@ -20,6 +20,7 @@ router.register(r'llogout', LogoutView, basename='llogout')
 
 
 
+
 urlpatterns = [
     path('register/', register, name='register'),
     path('login/', user_login, name='login'),

@@ -60,3 +60,19 @@ POST ORDERS
 }
 
 ////
+
+
+put ORDERS
+
+{
+    "delivery_type": "courier",
+    "ready_at": "2023-12-31T18:00:00Z",
+    "delivery_address": {
+        "city": "Моsdfsdfsdfsdfsdfсква",
+        "address": "Новdsfsdfsdfsdfая улица"
+    },
+    "products": [
+        {"id": 1, "quantity": 33},
+        {"id": 2, "quantity": 1}
+    ]
+}

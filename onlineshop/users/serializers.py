@@ -61,7 +61,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             email=email
         )
         
-        # Создаем профиль
+        # создание 
         profile = UserProfile.objects.create(user=user, **validated_data)
         return profile
 
@@ -69,11 +69,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('user', {})
         email = user_data.pop('email', None)
         
-        # Обновляем профиль
+        # Обнов профиль
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         
-        # Обновляем пользователя
+        # обнов пользователя
         if user_data or email is not None:
             user = instance.user
             if email is not None:
@@ -101,7 +101,7 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)  # Полная информация о продукте
+    product = ProductSerializer(read_only=True)  # инфо о продукте
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Products.objects.all(),
         source='product',
@@ -221,3 +221,62 @@ class OrderSerializer(serializers.ModelSerializer):
         order.save()
 
         return order
+
+    def update(self, instance, validated_data):
+        # Получаем данные для обновления
+        products_data = validated_data.pop('products', None)
+        delivery_address_data = validated_data.pop('delivery_address', None)
+
+        # Обновляем основные поля заказа
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        # Обновляем адрес доставки, если он предоставлен
+        if delivery_address_data is not None:
+            if instance.delivery_address and delivery_address_data:
+                # Обновляем существующий адрес
+                delivery_address_serializer = DeliveryAddressSerializer(
+                    instance.delivery_address,
+                    data=delivery_address_data,
+                    partial=True
+                )
+                delivery_address_serializer.is_valid(raise_exception=True)
+                delivery_address_serializer.save()
+            elif delivery_address_data:
+                # Создаем новый адрес
+                user = self.context['request'].user
+                delivery_address_data['user'] = user
+                instance.delivery_address = DeliveryAddress.objects.create(**delivery_address_data)
+            else:
+                # Удаляем адрес, если передано null
+                instance.delivery_address = None
+
+        # Обновляем товары в заказе, если они предоставлены
+        if products_data is not None:
+            # Удаляем все существующие OrderItem
+            instance.items.all().delete()
+            
+            # Создаем новые OrderItems и рассчитываем сумму
+            total = 0
+            order_items = []
+            for product_data in products_data:
+                product = product_data['product']
+                quantity = product_data['quantity']
+                price = product.price * quantity
+                total += price
+                
+                order_items.append(OrderItem(
+                    order=instance,
+                    product=product,
+                    quantity=quantity,
+                    price=price
+                ))
+
+            # Массовое создание OrderItems
+            OrderItem.objects.bulk_create(order_items)
+            
+            # Обновляем сумму заказа
+            instance.total = total
+
+        instance.save()
+        return instance
